@@ -1,12 +1,8 @@
-// Every choice the teacher makes on the Circuit Diagram Generator, with its
-// default: a 12 V battery and three resistors in series. The generator keeps
-// to the circuits worksheets start with, a cell or battery and 1 to 4
-// resistors or bulbs, all in series or all in parallel (docs/adr/0005);
-// anything else is left to a Circuit Editor, planned but not built yet. The
-// figure is laid out from a series/parallel tree built from these settings
-// (see circuit.ts).
+// Quick setup choices and the advanced editable tree for the Circuit Diagram
+// Generator. Both are laid out from the same series/parallel tree.
 
 import { bool, choice, defineSettings, label, list, type Field, type SettingsOf } from '$lib/shared/settings'
+import { circuitField, DEFAULT_CIRCUIT } from './tree'
 
 export const MAX_LOADS = 4
 
@@ -42,6 +38,9 @@ export const VOLTMETER_PLACES = ['none', 'source', '1', '2', '3', '4'] as const
 export type VoltmeterPlace = (typeof VOLTMETER_PLACES)[number]
 
 export const circuitSettings = defineSettings({
+  editor: choice('quick', ['quick', 'custom']),
+  topology: choice('loop', ['loop', 'open']),
+  customCircuit: circuitField(structuredClone(DEFAULT_CIRCUIT)),
   arrangement: choice('series', ['series', 'parallel']),
   loads: nonEmpty(list(load, [newLoad(0), newLoad(1), newLoad(2)], MAX_LOADS)),
   /** One cell, or a battery of two. */

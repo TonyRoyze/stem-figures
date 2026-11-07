@@ -11,21 +11,21 @@
   import type { Label } from '$lib/shared/label'
   import Section from '$lib/shared/Section.svelte'
   import CircuitDiagram from './CircuitDiagram.svelte'
+  import TreeEditor from './TreeEditor.svelte'
   import { loadNames, plainText } from './circuit'
   import { circuitSettings, MAX_LOADS, newLoad, type Load, type VoltmeterPlace } from './settings'
+  import { describeCircuit } from './tree'
 
   const gen = createGenerator(circuitSettings, 'circuit-diagram')
   const s = $derived(gen.snapshot())
 
-  const KINDS = { resistor: 'Resistor', bulb: 'Bulb' }
+  const KINDS = { resistor: 'Resistor', bulb: 'Bulb', led: 'LED' }
   const shown = (l: Label) => (l.mode === 'text' ? plainText(l.text) : l.mode === 'blank' ? 'blank' : '')
   const names = $derived(loadNames(s).map(plainText))
   const rowSummary = (load: Load, i: number) =>
     [load.name.mode === 'text' ? names[i] : shown(load.name), shown(load.value)].filter(Boolean).join(' · ') || 'no labels'
 
-  const circuitSummary = $derived(
-    `${s.loads.length === 1 ? 'one part' : `${s.loads.length} in ${s.arrangement}`} · ${s.loads.map((l, i) => names[i] || KINDS[l.kind].toLowerCase()).join(', ')}`,
-  )
+  const circuitSummary = $derived(s.editor === 'custom' ? describeCircuit(s.customCircuit) : `${s.loads.length === 1 ? 'one part' : `${s.loads.length} in ${s.arrangement}`} · ${s.loads.map((l, i) => names[i] || KINDS[l.kind].toLowerCase()).join(', ')}`)
   const sourceSummary = $derived([s.source === 'cell' ? 'One cell' : 'Battery', shown(s.sourceValue), s.polarity ? '+ and −' : ''].filter(Boolean).join(' · '))
   const meterSummary = $derived(
     [s.switch === 'none' ? '' : `${s.switch} switch`, s.ammeter ? 'ammeter' : '', s.voltmeter === 'none' ? '' : 'voltmeter'].filter(Boolean).join(' · ') || 'none',
@@ -63,6 +63,18 @@
 <GeneratorPage name="Circuit Diagram Generator" filename="circuit-diagram" {gen}>
   {#snippet settings()}
     <Section title="Circuit" icon={CircuitBoard} summary={circuitSummary}>
+      <div class="field">
+        Editor
+        <Choice name="Circuit editor" options={[["quick", "Quick setup"], ["custom", "Build a circuit"]]} bind:value={gen.s.editor} />
+      </div>
+      {#if s.editor === 'custom'}
+        <div class="field">
+          Diagram
+          <Choice name="Diagram layout" options={[["loop", "Closed loop"], ["open", "Open network (X–Y)"]]} bind:value={gen.s.topology} />
+        </div>
+        <p class="note">Add components in series, or group components in parallel. You can add a group inside another group.</p>
+        <TreeEditor items={gen.s.customCircuit.items} bind:polarity={gen.s.polarity} />
+      {:else}
       {#if s.loads.length > 1}
         <div class="field">
           Resistors and bulbs
@@ -99,9 +111,10 @@
         {full ? `A circuit holds up to ${MAX_LOADS} resistors and bulbs` : 'Add a resistor or bulb'}
       </button>
       <p class="note">Leave a name empty to number it automatically.</p>
-      <p class="note">Need a mixed or more complex circuit? An advanced circuit editor is coming soon.</p>
+      {/if}
     </Section>
 
+    {#if s.editor === 'quick'}
     <Section title="Cell or battery" icon={BatteryFull} summary={sourceSummary}>
       <div class="field">
         <Choice name="Cell or battery" options={[['cell', 'One cell'], ['battery', 'Battery of two cells']]} bind:value={gen.s.source} />
@@ -130,6 +143,7 @@
         <div class="field">Voltmeter reading <LabelField name="Voltmeter reading" bind:label={gen.s.voltmeterLabel} /></div>
       {/if}
     </Section>
+    {/if}
 
     <Section title="Symbols" icon={Palette} summary={s.symbols === 'us' ? 'US symbols' : 'IEC (UK) symbols'}>
       <div class="field">
@@ -145,7 +159,7 @@
   {/snippet}
 
   {#snippet figure()}
-    <CircuitDiagram settings={s} id="f" />
+    <CircuitDiagram settings={s} customCircuit={s.editor === 'custom' ? s.customCircuit : undefined} id="f" />
   {/snippet}
 </GeneratorPage>
 
