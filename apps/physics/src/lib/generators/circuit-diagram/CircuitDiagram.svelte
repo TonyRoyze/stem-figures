@@ -15,7 +15,7 @@
 
   const hasTitle = $derived(settings.title.mode !== 'none' && (settings.title.mode === 'blank' || settings.title.text.trim() !== ''))
   const circuit = $derived(customCircuit ?? circuitOf(settings))
-  const fig = $derived(buildCircuit(circuit, { title: hasTitle, polarity: settings.polarity, topology: settings.editor === 'custom' ? settings.topology : 'loop' }))
+  const fig = $derived(buildCircuit(circuit, { title: hasTitle, polarity: settings.polarity, topology: settings.editor === 'custom' ? 'open' : 'loop' }))
   const p = $derived(palette(settings.color))
   /** Symbols stand out in blue on slides; wires stay black. */
   const partInk = $derived(settings.color ? '#1d4ed8' : p.ink)

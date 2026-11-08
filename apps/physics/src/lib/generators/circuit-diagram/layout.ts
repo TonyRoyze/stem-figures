@@ -99,7 +99,8 @@ export function symbolSize(part: Part): { half: number; up: number; down: number
     battery: { half: part.cells * 10 - 5, up: 17, down: 17 },
     resistor: { half: 22, up: 9, down: 9 },
     bulb: { half: 15, up: 15, down: 15 },
-    led: { half: 20, up: 21, down: 8 },
+    led: { half: 30, up: 20, down: 11.1 },
+    diode: { half: 30, up: 11.1, down: 11.1 },
     switch: { half: 17, up: part.open ? 18 : 4, down: 4 },
     ammeter: { half: 15, up: 15, down: 15 },
   }

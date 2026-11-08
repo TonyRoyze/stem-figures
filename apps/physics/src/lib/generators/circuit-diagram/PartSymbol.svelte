@@ -32,14 +32,19 @@
   {:else}
     <path d="M-10.6,-10.6 L10.6,10.6 M-10.6,10.6 L10.6,-10.6" stroke={ink} stroke-width="1.8" />
   {/if}
+{:else if part.kind === 'diode'}
+  <g fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
+    <path d="M-30 0 H-12 M8 0 H30" />
+    <path d="M-12 -10 L8 0 L-12 10 Z" fill="white" />
+    <path d="M8 -10 V10" />
+  </g>
 {:else if part.kind === 'led'}
-  <path d="M-20,0 H-15 M15,0 H20" stroke={ink} stroke-width="2" fill="none" />
-  <g transform="scale(1 -1) rotate(90) translate(-40 -55)" stroke={ink} stroke-width="2" stroke-linecap="square" fill="none">
-    <line x1="40" y1="70" x2="40" y2="40" />
-    <path d="M40,48 M32,48 L48,48 M40,48 L48,63 L32,63 L40,48" />
-    <path d="M51,52 L59,44 M44,46 L52,38" />
-    <polygon points="60,43 58,49 54,45" fill={ink} stroke="none" />
-    <polygon points="53,37 51,43 47,39" fill={ink} stroke="none" />
+  <g fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
+    <path d="M-30 0 H-12 M8 0 H30" />
+    <path d="M-12 -10 L8 0 L-12 10 Z" fill="white" />
+    <path d="M8 -10 V10" />
+    <path d="M-4 -11 L4 -19 M5 -11 L13 -19" stroke-width="1.5" />
+    <path d="M0 -20 L5 -20 L5 -15 Z M9 -20 L14 -20 L14 -15 Z" fill={ink} stroke="none" />
   </g>
 {:else if part.kind === 'battery'}
   <g transform={part.flip ? 'scale(-1 1)' : undefined}>

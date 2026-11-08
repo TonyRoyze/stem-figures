@@ -11,7 +11,7 @@
 //
 //   b.r.[r.(r.l)]    a battery, then R₁, then R₂ in parallel with R₃ and a bulb
 //
-// b r l d s a are a battery, resistor, bulb (lamp), LED, switch and ammeter; "." joins
+// b r l d e s a are a battery, resistor, bulb (lamp), LED, diode, switch and ammeter; "." joins
 // items; ( ) is a series group and [ ] a parallel one. After a part come its
 // flags (o an open switch, 2 a battery of two cells, f a battery turned round),
 // then after any item its extras, each a letter and a quoted label: n its name,
@@ -21,8 +21,8 @@
 import { cleanLabel, decodeLabel, encodeLabel, type Label, type LabelMode } from '$lib/shared/label'
 import type { Field } from '$lib/shared/settings'
 
-export type PartKind = 'battery' | 'resistor' | 'bulb' | 'led' | 'switch' | 'ammeter'
-export const PART_KINDS: readonly PartKind[] = ['battery', 'resistor', 'bulb', 'led', 'switch', 'ammeter']
+export type PartKind = 'battery' | 'resistor' | 'bulb' | 'led' | 'diode' | 'switch' | 'ammeter'
+export const PART_KINDS: readonly PartKind[] = ['battery', 'resistor', 'bulb', 'led', 'diode', 'switch', 'ammeter']
 
 export const cleanCells = (value: unknown): number => typeof value === 'number' && Number.isFinite(value) ? Math.min(10, Math.max(1, Math.round(value))) : 1
 
@@ -74,11 +74,11 @@ export interface Circuit {
 }
 
 // Each kind's letter in an address, its automatic name, and its labels as they start.
-const LETTER: Record<PartKind, string> = { battery: 'b', resistor: 'r', bulb: 'l', led: 'd', switch: 's', ammeter: 'a' }
+const LETTER: Record<PartKind, string> = { battery: 'b', resistor: 'r', bulb: 'l', led: 'd', diode: 'e', switch: 's', ammeter: 'a' }
 const KIND_OF = new Map(Object.entries(LETTER).map(([kind, letter]) => [letter, kind as PartKind]))
-const PREFIX: Record<PartKind, string> = { battery: 'epsilon', resistor: 'R', bulb: 'L', led: 'D', switch: 'S', ammeter: 'A' }
-const NAME_MODE: Record<PartKind, LabelMode> = { battery: 'text', resistor: 'text', bulb: 'text', led: 'text', switch: 'text', ammeter: 'none' }
-const VALUE_TEXT: Record<PartKind, string> = { battery: '12 V', resistor: '4 Omega', bulb: '', led: '', switch: '', ammeter: '0.5 A' }
+const PREFIX: Record<PartKind, string> = { battery: 'epsilon', resistor: 'R', bulb: 'L', led: 'D', diode: 'D', switch: 'S', ammeter: 'A' }
+const NAME_MODE: Record<PartKind, LabelMode> = { battery: 'text', resistor: 'text', bulb: 'text', led: 'text', diode: 'text', switch: 'text', ammeter: 'none' }
+const VALUE_TEXT: Record<PartKind, string> = { battery: '12 V', resistor: '4 Omega', bulb: '', led: '', diode: '', switch: '', ammeter: '0.5 A' }
 
 export const defaultValue = (kind: PartKind): Label => ({ mode: 'none', text: VALUE_TEXT[kind] })
 export const DEFAULT_VOLTMETER: Label = { mode: 'none', text: 'V' }
@@ -384,7 +384,7 @@ export function decodeCircuit(raw: string): Circuit | undefined {
 // A written description, for screen readers. Labels are left out, so a blank
 // is never given away.
 
-const PART_WORDS: Record<PartKind, string> = { battery: 'a battery', resistor: 'a resistor', bulb: 'a bulb', led: 'an LED', switch: 'a switch', ammeter: 'an ammeter' }
+const PART_WORDS: Record<PartKind, string> = { battery: 'a battery', resistor: 'a resistor', bulb: 'a bulb', led: 'an LED', diode: 'a diode', switch: 'a switch', ammeter: 'an ammeter' }
 
 function describeItem(item: Item): string {
   if (item.type === 'part') {

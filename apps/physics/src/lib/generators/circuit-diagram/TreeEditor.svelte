@@ -10,7 +10,7 @@
   let { items, rootItems = items, depth = 0, polarity = $bindable(false), removable = false, onremove }: { items: Item[]; rootItems?: Item[]; depth?: number; polarity?: boolean; removable?: boolean; onremove?: () => void } = $props()
   const count = $derived([...partsOf(rootItems)].length)
   const canAdd = $derived(count < MAX_PARTS)
-  const kindNames: Record<PartKind, string> = { battery: 'Cell or battery', resistor: 'Resistor', bulb: 'Bulb', led: 'LED', switch: 'Switch', ammeter: 'Ammeter' }
+  const kindNames: Record<PartKind, string> = { battery: 'Cell or battery', resistor: 'Resistor', bulb: 'Bulb', led: 'LED', diode: 'Diode', switch: 'Switch', ammeter: 'Ammeter' }
   function addPart(kind: PartKind) { if (canAdd) { items.push(newPart(kind)); renumber({ items: rootItems, current: null }) } }
   function addGroup(type: 'series' | 'parallel') { if (count + 2 <= MAX_PARTS && depth < MAX_DEPTH) { items.push(newGroup(type, [newPart('resistor'), newPart('resistor')])); renumber({ items: rootItems, current: null }) } }
   function removeAt(index: number) { items.splice(index, 1) }
@@ -50,8 +50,8 @@
           </div>
         {/if}
         <div class="line">
-          <div class="field">Label <LabelField name="Component label" placeholder={item.kind === 'resistor' ? 'R_1' : item.kind === 'led' ? 'D_1' : 'Name'} bind:label={item.name} /></div>
-          {#if ['resistor', 'bulb', 'led', 'battery', 'ammeter'].includes(item.kind)}
+          <div class="field">Label <LabelField name="Component label" placeholder={item.kind === 'resistor' ? 'R_1' : (item.kind === 'led' || item.kind === 'diode') ? 'D_1' : 'Name'} bind:label={item.name} /></div>
+          {#if ['resistor', 'bulb', 'led', 'diode', 'battery', 'ammeter'].includes(item.kind)}
             <div class="field">Value <LabelField name="Component value" placeholder="Value or blank" bind:label={item.value} /></div>
           {/if}
         </div>
@@ -103,7 +103,8 @@
   .tree :global(.segmented) { min-width: 0; display: flex; flex-wrap: wrap; }
   .tree :global(.segmented button) { min-width: 0; flex: 1 1 3rem; white-space: normal; }
   .remove-branch { border: 1px solid var(--border); background: transparent; border-radius: 8px; padding: .38rem .55rem; cursor: pointer; }
-  .add-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: .4rem; min-width: 0; }
+  .add-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; min-width: 0; padding: .75rem; margin: .25rem 0; border: 1px solid var(--border); border-radius: 10px; }
+  .add-select { margin-bottom: .2rem; }
   .add-group { display: flex; align-items: center; justify-content: center; gap: .35rem; padding: .35rem .65rem; border-radius: 9px; white-space: normal; }
   .muted { color: var(--muted); font-size: .8rem; }
   .remove-branch { justify-self: start; }
