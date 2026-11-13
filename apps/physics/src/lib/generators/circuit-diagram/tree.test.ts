@@ -142,3 +142,9 @@ test('diodes survive tree serialization without changing LED encoding', () => {
   expect(shape(circuit)).toBe('e.d')
   expect([...partsOf(roundTrip(circuit).items)].map(part => part.kind)).toEqual(['diode', 'led'])
 })
+
+test('diode and LED direction survives cleaning and URL serialization', () => {
+  const circuit = loop(p('diode', { flip: true }), p('led', { flip: true }), p('led'))
+  expect(shape(cleanCircuit(circuit))).toBe('ef.df.d')
+  expect([...partsOf(roundTrip(circuit).items)].map(part => part.flip)).toEqual([true, true, false])
+})

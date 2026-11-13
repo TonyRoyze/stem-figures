@@ -242,7 +242,7 @@ function cleanItem(v: unknown): Item | null {
       value: cleanLabel(v.value, fresh.value),
       open: kind === 'switch' && v.open === true,
       cells: kind === 'battery' ? cleanCells(v.cells) : 1,
-      flip: kind === 'battery' && v.flip === true,
+      flip: (kind === 'battery' || kind === 'diode' || kind === 'led') && v.flip === true,
     }
   }
   if ((v.type === 'series' || v.type === 'parallel') && Array.isArray(v.items)) {

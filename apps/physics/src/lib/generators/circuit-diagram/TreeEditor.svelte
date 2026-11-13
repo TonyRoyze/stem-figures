@@ -42,6 +42,9 @@
         {#if item.kind === 'switch'}
           <label class="check"><input type="checkbox" bind:checked={item.open} /> Open switch</label>
         {/if}
+        {#if item.kind === 'diode' || item.kind === 'led'}
+          <label class="check"><input type="checkbox" bind:checked={item.flip} /> Flip direction</label>
+        {/if}
         {#if item.kind === 'battery'}
           <div class="battery-options">
             <label class="field">Cells<input type="number" min="1" max="10" step="1" value={item.cells} onchange={(e) => { item.cells = cleanCells(e.currentTarget.valueAsNumber); e.currentTarget.value = String(item.cells) }} /></label>
