@@ -33,13 +33,13 @@
     <path d="M-10.6,-10.6 L10.6,10.6 M-10.6,10.6 L10.6,-10.6" stroke={ink} stroke-width="1.8" />
   {/if}
 {:else if part.kind === 'diode'}
-  <g fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
+  <g transform={part.flip ? 'scale(-1 1)' : undefined} fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
     <path d="M-30 0 H-12 M8 0 H30" />
     <path d="M-12 -10 L8 0 L-12 10 Z" fill="white" />
     <path d="M8 -10 V10" />
   </g>
 {:else if part.kind === 'led'}
-  <g fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
+  <g transform={part.flip ? 'scale(-1 1)' : undefined} fill="none" stroke={ink} stroke-width="2.2" stroke-linejoin="round">
     <path d="M-30 0 H-12 M8 0 H30" />
     <path d="M-12 -10 L8 0 L-12 10 Z" fill="white" />
     <path d="M8 -10 V10" />

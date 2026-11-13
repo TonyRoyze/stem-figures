@@ -90,6 +90,7 @@
     {/if}
     {#if kind === 'battery'}<label class="field">Cells<input type="number" min="1" max="3" value={detail?.cells ?? 2} onchange={e => update({ cells: Math.max(1, Math.min(3, e.currentTarget.valueAsNumber || 2)) })} /></label>{/if}
     {#if kind === 'battery' || kind === 'cell'}<label class="check"><input type="checkbox" checked={detail?.flip ?? false} onchange={e => update({ flip: e.currentTarget.checked })} /> Flip polarity</label>{/if}
+    {#if kind === 'diode' || kind === 'led'}<label class="check"><input type="checkbox" checked={detail?.flip ?? false} onchange={e => update({ flip: e.currentTarget.checked })} /> Flip direction</label>{/if}
     {#if kind === 'switch'}<label class="check"><input type="checkbox" checked={detail?.open ?? false} onchange={e => update({ open: e.currentTarget.checked })} /> Open switch</label>{/if}
   {:else}<p class="note">Select a tile in the diagram to edit it.</p>{/if}
 </Section>
